@@ -103,6 +103,4 @@ public class KeyData implements Serializable {
     public int hashCode() {
         return Objects.hash(this.id, this.name, this.charCode, this.timePressed, this.timeToNextChar);
     }
-
-
 }
