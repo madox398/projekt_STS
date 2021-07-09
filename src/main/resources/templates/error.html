@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="application/json">
+    <title>Error Page</title>
+</head>
+<body>
+{<th:block th:if="${timestamp}">"timestamp": "</th:block ><th:block th:text="${timestamp}"></th:block >"<th:block th:if="${status}">,</th:block >
+<th:block th:if="${status}"> "status": </th:block ><th:block  th:if="${status}" th:text="${status}"></th:block ><th:block  th:if="${message}">,</th:block >
+<th:block th:if="${message}"> "error":"</th:block ><th:block  th:if="${message}" th:text="${message}"></th:block ><th:block  th:if="${message}">"</th:block >}
+</body>
+</html>

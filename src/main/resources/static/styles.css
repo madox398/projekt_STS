@@ -1,0 +1,36 @@
+.center {
+    overflow: hidden;
+    margin: auto 0;
+    width: 50%;
+    text-align:center;
+
+}
+.left{
+    margin: 0;
+    padding: 0;
+    width: 25%;
+    text-align:center;
+    float: left;
+}
+.right{
+    float:right;
+    width: 25%;
+}
+.dot {
+    height: 30px;
+    width: 40px;
+    background-color: #bbb;
+    border-radius: 50%;
+    padding-top: 10px;
+    display: inline-block;
+}
+#p_keyId{
+    display: none;
+}
+textarea{
+    max-width:90%;
+    max-height:30%;
+}
+textarea:disabled{
+    background-color: #e0e0e0;
+}
