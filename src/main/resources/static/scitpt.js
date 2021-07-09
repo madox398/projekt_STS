@@ -9,43 +9,65 @@ $(document).ready(function(){
     var personName;
     var keydown=[];
 
+    var maxLengthOfText =150;
+
     $("#text").prop("disabled",true);
 
-    $("#name").on("input",(function() {
+    $('#text').on("cut copy paste",function(e) {
+        e.preventDefault();
+    });
+
+    $("#text").prop("maxLength",maxLengthOfText);
+
+    $("#maxTextLength").val(maxLengthOfText);
+    $("#maxTextLength").prop("min",0);
+
+    $("#maxTextLength").on("change",(function (){
+        maxLengthOfText=$("#maxTextLength").val();
+        $("#text").prop("maxLength",maxLengthOfText);
+    }))
+
+
+    $("#name").on("input", (function () {
         var str = $("#name").val();
-        if(str.length>1){
+        if (str.length > 1) {
             $("#text").removeAttr('disabled');
-        }else {
+        } else {
             $("#text").attr('disabled', 'disabled');
         }
         $("#wynik").text(str);
     }));
 
-    $("#text").keydown(function(event){
+    $("#text").keydown(function (event) {
         //Czas od poprzedniego wciśnięcia klawisza zacznij liczyć
         //gdy zostanie wciśnięty pierwszy klawisz
-        if(firstKey){
-            firstKey=!firstKey;
-            timeToPreviousTemp=Date.now();
+        if (firstKey) {
+            firstKey = !firstKey;
+            timeToPreviousTemp = Date.now();
         }
-        if(!keydown[event.which]){
+        if (!keydown[event.which]) {
             //Eliminuje problem długiego wciśnięcia przycisku
-            keydown[event.which]=true;
+            keydown[event.which] = true;
             //Zmienna tymczasowa do mierzenia czasu wciśnięcia
             timeTemp[event.which] = new Date();
             //Czas od poprzedniego klawisza
-            timeToPrevious[event.which] = Date.now() -timeToPreviousTemp;
+            timeToPrevious[event.which] = Date.now() - timeToPreviousTemp;
         }
         timeToPreviousTemp = Date.now();
     })
 
-    $("#text").keyup(function(event){
-        //Jeśli przycisk został puszczony przypisz false
-        keydown[event.which]=false;
-        //Długość wciśnięcia
-        timePress[event.which] = Date.now()-timeTemp[event.which];
-        personName = $("#name").val();
-        toDatabase(event.which);
+    $("#text").keyup(function (event) {
+        if($('#text').val().length<maxLengthOfText) {
+            //Jeśli przycisk został puszczony przypisz false
+            keydown[event.which] = false;
+            //Długość wciśnięcia
+            timePress[event.which] = Date.now() - timeTemp[event.which];
+            personName = $("#name").val();
+            toDatabase(event.which);
+        }else {
+            $("#keyId").text("Przekroczyłeś maksymalną liczbę znaków");
+            $("#p_keyId").css("display","none");
+        }
     })
     function toDatabase(idKey)
     {

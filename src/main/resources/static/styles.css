@@ -3,7 +3,7 @@
     margin: auto 0;
     width: 50%;
     text-align:center;
-
+    float: left;
 }
 .left{
     margin: 0;
@@ -13,8 +13,11 @@
     float: left;
 }
 .right{
-    float:right;
+    margin: 0;
+    padding: 0;
     width: 25%;
+    text-align: center;
+    float:right;
 }
 .dot {
     height: 30px;
@@ -24,6 +27,12 @@
     padding-top: 10px;
     display: inline-block;
 }
+.text-center {
+    overflow: hidden;
+    margin: auto;
+    text-align:center;
+}
+
 #p_keyId{
     display: none;
 }
