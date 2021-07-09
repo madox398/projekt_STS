@@ -1,6 +1,4 @@
-// noinspection JSJQueryEfficiency
-
-$(document).ready(function(){
+$(window).on('load', function(){
     var timeTemp=[];
     var timePress=[];
     var timeToPrevious=[];
@@ -10,15 +8,18 @@ $(document).ready(function(){
     var keyDown=[];
     var keyDownTextLength=0;
 
-    var maxLengthOfText =150;
+    var maxLengthOfText = 150;
 
-    $("#text").prop("disabled",true);
+    var $textArea = $("#text");
+    var $spanKeyId=$("#keyId");
+    var $paragraphKeyId=$("#p_keyId")
 
-    $('#text').on("cut copy paste",function(e) {
-        e.preventDefault();
-    });
-
-    $("#text").prop("maxLength",maxLengthOfText);
+    $textArea
+        .prop("maxLength",maxLengthOfText)
+        .prop("disabled",true)
+        .on("cut copy paste",function(e) {
+            e.preventDefault();
+        });
 
 
     $("#name").on("input", (function () {
@@ -28,51 +29,48 @@ $(document).ready(function(){
         } else {
             $("#text").attr('disabled', 'disabled');
         }
-        $("#wynik").text(str);
     }));
 
-
-        $("#text").keydown(function (event) {
-            //określa liczbę znaków w polu tekstowym przed wpisaniem znaku
-            keyDownTextLength=$('#text').val().length;
-            //Czas od poprzedniego wciśnięcia klawisza zacznij liczyć
-            //gdy zostanie wciśnięty pierwszy klawisz
-            if (firstKey) {
-                firstKey = !firstKey;
-                timeToPreviousTemp = Date.now();
-            }
-
-            if (!keyDown[event.which]) {
-                //Eliminuje problem długiego wciśnięcia przycisku
-                keyDown[event.which] = true;
-                //Zmienna tymczasowa do mierzenia czasu wciśnięcia
-                timeTemp[event.which] = new Date();
-                //Czas od poprzedniego klawisza
-                timeToPrevious[event.which] = Date.now() - timeToPreviousTemp;
-            }
+    $textArea.keydown(function (event) {
+        //określa liczbę znaków w polu tekstowym przed wpisaniem znaku
+        keyDownTextLength=$('#text').val().length;
+        //Czas od poprzedniego wciśnięcia klawisza zacznij liczyć
+        //gdy zostanie wciśnięty pierwszy klawisz
+        if (firstKey) {
+            firstKey = !firstKey;
             timeToPreviousTemp = Date.now();
-        })
+        }
 
-        $("#text").keyup(function (event) {
-            if(event.which!==9) {
-                if (keyDownTextLength < maxLengthOfText) {
-                    //Jeśli przycisk został puszczony przypisz false
-                    keyDown[event.which] = false;
-                    //Długość wciśnięcia
-                    timePress[event.which] = Date.now() - timeTemp[event.which];
-                    personName = $("#name").val();
-                    toDatabase(event.which);
-                } else {
-                    $("#keyId").text("Przekroczyłeś maksymalną liczbę znaków");
-                    $("#p_keyId").css("display", "none");
+        if (!keyDown[event.which]) {
+            //Eliminuje problem długiego wciśnięcia przycisku
+            keyDown[event.which] = true;
+            //Zmienna tymczasowa do mierzenia czasu wciśnięcia
+            timeTemp[event.which] = new Date();
+            //Czas od poprzedniego klawisza
+            timeToPrevious[event.which] = Date.now() - timeToPreviousTemp;
+        }
+        timeToPreviousTemp = Date.now();
+    })
 
-                }
+    $textArea.keyup(function (event) {
+        if(event.which!==9) {
+            if (keyDownTextLength < maxLengthOfText) {
+                //Jeśli przycisk został puszczony przypisz false
+                keyDown[event.which] = false;
+                //Długość wciśnięcia
+                timePress[event.which] = Date.now() - timeTemp[event.which];
+                personName = $("#name").val();
+                toDatabase(event.which);
+            } else {
+                $spanKeyId.text("Przekroczyłeś maksymalną liczbę znaków");
+                $paragraphKeyId.css("display", "none");
             }
-        })
+        }
+    })
 
     function toDatabase(idKey)
     {
-        console.log("Klawisz: "+idKey+"["+String.fromCharCode(idKey)+"], Czas przytrzymania: "+timePress[idKey]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey]);
+        console.log("Klawisz: "+idKey+"["+String.fromCharCode(idKey)+"], Czas przytrzymania: "+timePress[idKey]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey]);//TODO console.log
 
         $.ajax({
             type: "POST",
@@ -85,28 +83,31 @@ $(document).ready(function(){
                 "timeToNextChar": timeToPrevious[idKey]
             }),
             success:function (d) {
-                $("#p_keyId").css("display","block");
-                $("#keyId").css("display","block");
+                $paragraphKeyId.css("display","block");
+                $spanKeyId
+                    .css("display","block")
+                    .css("background-color","rgba(0,0,0,0)")
+                    .text(d.id);
                 $("#dotConnectionStatus").css("background-color","#00ff00");
-                $("#text").css("background-color","rgba(0,0,0,0)");
-                $("#keyId").css("background-color","rgba(0,0,0,0)");
-                $("#keyId").text(d.id);
+                $textArea.css("background-color","rgba(0,0,0,0)");
 
                 if(d.error){
-                    $("#keyId").text(d.error);
-                    $("#keyId").css("background-color","#ff0000");
-                    $("#text").css("background-color","rgba(255,0,0,0.05)");
+                    $("#keyId")
+                        .text(d.error)
+                        .css("background-color","#ff0000");
+                    $textArea.css("background-color","rgba(255,0,0,0.05)");
                     $("#p_keyId").css("display","none");
                 }
             },
             error:function () {
                 $("#dotConnectionStatus").css("background-color","#ff0000");
-                $("#text").css("background-color","rgba(255,0,0,0.05)");
-                $("#p_keyId").css("display","none");
-                $("#keyId").css("display","none");
+                $textArea.css("background-color","rgba(255,0,0,0.05)");
+                $paragraphKeyId.css("display","none");
+                $spanKeyId.css("display","none");
             }
         })
         timePress[idKey]=0;
         personName="";
+        return false;
     }
 })

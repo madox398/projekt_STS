@@ -28,20 +28,6 @@ public class BackEndController {
     private JSONObject newKey(@RequestBody KeyData newKey) {
         if(newKey.getName().length()>0){
 
-            char c = (char)newKey.getCharCode();
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("Klawisz: ")
-                    .append(newKey.getCharCode())
-                    .append("[")
-                    .append(c)
-                    .append("]")
-                    .append(", Czas kliku: ")
-                    .append(newKey.getTimePressed())
-                    .append(", Czas od poprzedniego znaku: ")
-                    .append(newKey.getTimeToNextChar())
-                    .append(", Imię: ")
-                    .append(newKey.getName());
-            System.out.println(stringBuilder); //TODO console.log
             repo.save(newKey);
 
             //Wyświetlanie id otrzymanego z bazy danych przesłanych danych w formacie JSON
@@ -55,6 +41,7 @@ public class BackEndController {
             return new JSONObject(tempError);
         }
     }
+
 
     //Wszystkie klucze z bazy
     @GetMapping(value = "/keys",
@@ -85,7 +72,7 @@ public class BackEndController {
     }
 
 
-    //Wypisanie wszystkich wpisów o podanej nazwie
+    //Wypisanie wszystkich wpisów o podanym imieniu
     @GetMapping(value = "/keys/name/{name}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     private Iterable<KeyData> getKeybyName(HttpServletResponse response, @PathVariable @NotNull String name) {
@@ -104,5 +91,4 @@ public class BackEndController {
         Pageable pageable = PageRequest.of(page,limit);
         return repo.findKeyDataByName(name,pageable);
     }
-
 }
