@@ -7,7 +7,8 @@ $(document).ready(function(){
     var timeToPreviousTemp=0;
     var firstKey=true;
     var personName;
-    var keydown=[];
+    var keyDown=[];
+    var keyDownTextLength=0;
 
     var maxLengthOfText =150;
 
@@ -18,14 +19,6 @@ $(document).ready(function(){
     });
 
     $("#text").prop("maxLength",maxLengthOfText);
-
-    $("#maxTextLength").val(maxLengthOfText);
-    $("#maxTextLength").prop("min",0);
-
-    $("#maxTextLength").on("change",(function (){
-        maxLengthOfText=$("#maxTextLength").val();
-        $("#text").prop("maxLength",maxLengthOfText);
-    }))
 
 
     $("#name").on("input", (function () {
@@ -38,37 +31,45 @@ $(document).ready(function(){
         $("#wynik").text(str);
     }));
 
-    $("#text").keydown(function (event) {
-        //Czas od poprzedniego wciśnięcia klawisza zacznij liczyć
-        //gdy zostanie wciśnięty pierwszy klawisz
-        if (firstKey) {
-            firstKey = !firstKey;
-            timeToPreviousTemp = Date.now();
-        }
-        if (!keydown[event.which]) {
-            //Eliminuje problem długiego wciśnięcia przycisku
-            keydown[event.which] = true;
-            //Zmienna tymczasowa do mierzenia czasu wciśnięcia
-            timeTemp[event.which] = new Date();
-            //Czas od poprzedniego klawisza
-            timeToPrevious[event.which] = Date.now() - timeToPreviousTemp;
-        }
-        timeToPreviousTemp = Date.now();
-    })
 
-    $("#text").keyup(function (event) {
-        if($('#text').val().length<maxLengthOfText) {
-            //Jeśli przycisk został puszczony przypisz false
-            keydown[event.which] = false;
-            //Długość wciśnięcia
-            timePress[event.which] = Date.now() - timeTemp[event.which];
-            personName = $("#name").val();
-            toDatabase(event.which);
-        }else {
-            $("#keyId").text("Przekroczyłeś maksymalną liczbę znaków");
-            $("#p_keyId").css("display","none");
-        }
-    })
+        $("#text").keydown(function (event) {
+            //określa liczbę znaków w polu tekstowym przed wpisaniem znaku
+            keyDownTextLength=$('#text').val().length;
+            //Czas od poprzedniego wciśnięcia klawisza zacznij liczyć
+            //gdy zostanie wciśnięty pierwszy klawisz
+            if (firstKey) {
+                firstKey = !firstKey;
+                timeToPreviousTemp = Date.now();
+            }
+
+            if (!keyDown[event.which]) {
+                //Eliminuje problem długiego wciśnięcia przycisku
+                keyDown[event.which] = true;
+                //Zmienna tymczasowa do mierzenia czasu wciśnięcia
+                timeTemp[event.which] = new Date();
+                //Czas od poprzedniego klawisza
+                timeToPrevious[event.which] = Date.now() - timeToPreviousTemp;
+            }
+            timeToPreviousTemp = Date.now();
+        })
+
+        $("#text").keyup(function (event) {
+            if(event.which!==9) {
+                if (keyDownTextLength < maxLengthOfText) {
+                    //Jeśli przycisk został puszczony przypisz false
+                    keyDown[event.which] = false;
+                    //Długość wciśnięcia
+                    timePress[event.which] = Date.now() - timeTemp[event.which];
+                    personName = $("#name").val();
+                    toDatabase(event.which);
+                } else {
+                    $("#keyId").text("Przekroczyłeś maksymalną liczbę znaków");
+                    $("#p_keyId").css("display", "none");
+
+                }
+            }
+        })
+
     function toDatabase(idKey)
     {
         console.log("Klawisz: "+idKey+"["+String.fromCharCode(idKey)+"], Czas przytrzymania: "+timePress[idKey]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey]);
