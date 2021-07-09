@@ -60,7 +60,7 @@ $(window).on('load', function(){
                 //Długość wciśnięcia
                 timePress[event.which] = Date.now() - timeTemp[event.which];
                 personName = $("#name").val();
-                toDatabase(event.which);
+                sendToDatabase(event.which);
             } else {
                 $spanKeyId.text("Przekroczyłeś maksymalną liczbę znaków");
                 $paragraphKeyId.css("display", "none");
@@ -68,7 +68,7 @@ $(window).on('load', function(){
         }
     })
 
-    function toDatabase(idKey)
+    function sendToDatabase(idKey)
     {
         console.log("Klawisz: "+idKey+"["+String.fromCharCode(idKey)+"], Czas przytrzymania: "+timePress[idKey]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey]);//TODO console.log
 
