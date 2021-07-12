@@ -60,7 +60,7 @@ $(window).on('load', function(){
             //Długość wciśnięcia
             timePress[event.which] = Date.now() - timeTemp[event.which];
             personName = $name.val();
-            sendToDatabase(event.which);
+            sendToDatabase(event);
         } else {
             $spanKeyId.text("Przekroczyłeś maksymalną liczbę znaków");
             $paragraphKeyId.css("display", "none");
@@ -69,8 +69,7 @@ $(window).on('load', function(){
 
     function sendToDatabase(idKey)
     {
-        console.log("Klawisz: "+idKey+"["+String.fromCharCode(idKey)+"], Czas przytrzymania: "+timePress[idKey]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey]);//TODO console.log
-        //console.log("Klawisz: "+idKey.which+"["+idkey.key+"], Czas przytrzymania: "+timePress[idKey.which]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey.which]);//TODO console.log
+        console.log("Klawisz: "+idKey.which+"["+idKey.code+"], Czas przytrzymania: "+timePress[idKey.which]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey.which]);//TODO console.log
 
         $.ajax({
             type: "POST",
@@ -78,9 +77,9 @@ $(window).on('load', function(){
             url:"http://localhost:8080/keys/add",
             data:JSON.stringify({
                 "name":personName,
-                "charCode": idKey,
-                "timePressed": timePress[idKey],
-                "timeToNextChar": timeToPrevious[idKey]
+                "keyCode": idKey.code,
+                "timePressed": timePress[idKey.which],
+                "timeToNextChar": timeToPrevious[idKey.which]
             }),
             success:function (d) {
                 $paragraphKeyId.css("display","block");

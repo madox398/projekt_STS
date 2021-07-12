@@ -19,7 +19,7 @@ public class KeyData implements Serializable {
     private String name;
 
     @Column(nullable = false)
-    private int charCode;
+    private String keyCode;
 
     @Column(nullable = false)
     private int timePressed;
@@ -29,9 +29,9 @@ public class KeyData implements Serializable {
 
     public KeyData(){}
 
-    public KeyData(String name, int charCode, int timePressed, int timeToNext){
+    public KeyData(String name, String keyCode, int timePressed, int timeToNext){
         this.name =name;
-        this.charCode=charCode;
+        this.keyCode = keyCode;
         this.timePressed = timePressed;
         this.timeToNextChar =timeToNext;
     }
@@ -44,8 +44,8 @@ public class KeyData implements Serializable {
         return name;
     }
 
-    public int getCharCode() {
-        return charCode;
+    public String getKeyCode() {
+        return keyCode;
     }
 
     public int getTimePressed() {
@@ -64,8 +64,8 @@ public class KeyData implements Serializable {
         this.name = name;
     }
 
-    public void setCharCode(int charCode) {
-        this.charCode = charCode;
+    public void setKeyCode(String charCode) {
+        this.keyCode = charCode;
     }
 
     public void setTimePressed(int timePressed) {
@@ -81,7 +81,7 @@ public class KeyData implements Serializable {
         return "KeyData{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", charCode=" + charCode +
+                ", charCode=" + keyCode +
                 ", timePress=" + timePressed +
                 ", timeToNext=" + timeToNextChar +
                 '}';
@@ -92,7 +92,7 @@ public class KeyData implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         KeyData keyData = (KeyData) o;
-        return (charCode == keyData.charCode) &&
+        return (keyCode.equals(keyData.keyCode)) &&
                 (timePressed == keyData.timePressed) &&
                 (timeToNextChar == keyData.timeToNextChar) &&
                 Objects.equals(id, keyData.id) &&
@@ -101,6 +101,6 @@ public class KeyData implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.charCode, this.timePressed, this.timeToNextChar);
+        return Objects.hash(this.id, this.name, this.keyCode, this.timePressed, this.timeToNextChar);
     }
 }
