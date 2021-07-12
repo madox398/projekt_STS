@@ -8,11 +8,12 @@ $(window).on('load', function(){
     var keyDown=[];
     var keyDownTextLength=0;
 
-    var maxLengthOfText = 150;
+    const maxLengthOfText = 150;
 
-    var $textArea = $("#text");
-    var $spanKeyId=$("#keyId");
-    var $paragraphKeyId=$("#p_keyId")
+    const $textArea = $("#text");
+    const $spanKeyId=$("#keyId");
+    const $paragraphKeyId=$("#p_keyId")
+    const $name = $("#name");
 
     $textArea
         .prop("maxLength",maxLengthOfText)
@@ -22,18 +23,18 @@ $(window).on('load', function(){
         });
 
 
-    $("#name").on("input", (function () {
-        var str = $("#name").val();
+    $name.on("input", (function () {
+        var str = $name.val();
         if (str.length > 1) {
-            $("#text").removeAttr('disabled');
+            $textArea.removeAttr('disabled');
         } else {
-            $("#text").attr('disabled', 'disabled');
+            $textArea.attr('disabled', 'disabled');
         }
     }));
 
-    $textArea.keydown(function (event) {
+    $name.add($textArea).keydown(function (event) {
         //określa liczbę znaków w polu tekstowym przed wpisaniem znaku
-        keyDownTextLength=$('#text').val().length;
+        keyDownTextLength=$textArea.val().length;
         //Czas od poprzedniego wciśnięcia klawisza zacznij liczyć
         //gdy zostanie wciśnięty pierwszy klawisz
         if (firstKey) {
@@ -52,25 +53,24 @@ $(window).on('load', function(){
         timeToPreviousTemp = Date.now();
     })
 
-    $textArea.keyup(function (event) {
-        if(event.which!==9) {
-            if (keyDownTextLength < maxLengthOfText) {
-                //Jeśli przycisk został puszczony przypisz false
-                keyDown[event.which] = false;
-                //Długość wciśnięcia
-                timePress[event.which] = Date.now() - timeTemp[event.which];
-                personName = $("#name").val();
-                sendToDatabase(event.which);
-            } else {
-                $spanKeyId.text("Przekroczyłeś maksymalną liczbę znaków");
-                $paragraphKeyId.css("display", "none");
-            }
+    $name.add($textArea).keyup(function (event) {
+        if (keyDownTextLength < maxLengthOfText) {
+            //Jeśli przycisk został puszczony przypisz false
+            keyDown[event.which] = false;
+            //Długość wciśnięcia
+            timePress[event.which] = Date.now() - timeTemp[event.which];
+            personName = $name.val();
+            sendToDatabase(event.which);
+        } else {
+            $spanKeyId.text("Przekroczyłeś maksymalną liczbę znaków");
+            $paragraphKeyId.css("display", "none");
         }
     })
 
     function sendToDatabase(idKey)
     {
         console.log("Klawisz: "+idKey+"["+String.fromCharCode(idKey)+"], Czas przytrzymania: "+timePress[idKey]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey]);//TODO console.log
+        //console.log("Klawisz: "+idKey.which+"["+idkey.key+"], Czas przytrzymania: "+timePress[idKey.which]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey.which]);//TODO console.log
 
         $.ajax({
             type: "POST",

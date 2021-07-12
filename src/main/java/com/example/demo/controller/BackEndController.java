@@ -42,7 +42,6 @@ public class BackEndController {
         }
     }
 
-
     //Wszystkie klucze z bazy
     @GetMapping(value = "/keys",
             produces = MediaType.APPLICATION_JSON_VALUE)
