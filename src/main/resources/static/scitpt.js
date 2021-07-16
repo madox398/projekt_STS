@@ -11,7 +11,7 @@ $(window).on('load', function(){
     var charsToSend=[];
     var nameIsDone=false;
 
-    const maxLengthOfText = 150;
+    const maxLengthOfText = 3000;
 
     const $textArea = $("#text");
     const $spanKeyId=$("#keyId");
@@ -112,7 +112,7 @@ $(window).on('load', function(){
 
     function sendToDatabase(idKey)
     {
-        console.log("Klawisz: "+idKey.which+"["+idKey.code+"], Czas przytrzymania: "+timePress[idKey.which]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey.which]);//TODO console.log
+        console.log("Klawisz: "+idKey.which+"["+idKey.code+"]["+idKey.which+"], Czas przytrzymania: "+timePress[idKey.which]+", Czas od poprzedniego znaku: "+timeToPrevious[idKey.which]);//TODO console.log
 
         $.ajax({
             type: "POST",
@@ -120,7 +120,7 @@ $(window).on('load', function(){
             url:"http://localhost:8080/keys/add",
             data:JSON.stringify({
                 "name":personName,
-                "keyCode": idKey.code,
+                "keyCode": idKey.which,
                 "timePressed": timePress[idKey.which],
                 "timeToNextChar": timeToPrevious[idKey.which]
             }),
@@ -177,7 +177,7 @@ $(window).on('load', function(){
         console.log(lastIndex);
         charsToSend[lastIndex] = JSON.stringify({
             "name":"##",
-            "keyCode": key.code,
+            "keyCode": key.which,
             "timePressed": timePress[key.which],
             "timeToNextChar": timeToPrevious[key.which]
         })

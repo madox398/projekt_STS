@@ -112,8 +112,8 @@ public class BackEndController {
         Iterable<KeyData> listUsers = repo.findAll();
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
-        String[] csvHeader = {"ID", "name", "key_code", "time_pressed", "time_to_next_char"};
-        String[] nameMapping = {"id", "name", "keyCode", "timePressed", "timeToNextChar"};
+        String[] csvHeader = {"name", "key_code", "time_pressed", "time_to_next_char"};
+        String[] nameMapping = {"name", "keyCode", "timePressed", "timeToNextChar"};
 
         csvWriter.writeHeader(csvHeader);
 
