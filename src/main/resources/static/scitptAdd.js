@@ -7,6 +7,7 @@ $(window).on('load', function(){
     var personName;
     var keyDown=[];
     var keyDownTextLength=0;
+    var userID;
 
     var charsToSend=[];
     var nameIsDone=false;
@@ -28,10 +29,7 @@ $(window).on('load', function(){
 
     $name.on("input", (function () {
         var str = $name.val();
-        if (str.length > 1) {
-            $textArea.removeAttr('disabled');
-            nameIsDone=true;
-        } else {
+        if (str.length <= 1) {
             $textArea.attr('disabled', 'disabled');
             nameIsDone=false;
         }
@@ -56,7 +54,7 @@ $(window).on('load', function(){
         }
         timeToPreviousTemp = Date.now();
     })
-        .keyup(function (event) {
+    $name.keyup(function (event) {
             if (keyDownTextLength < maxLengthOfText) {
                 //Jeśli przycisk został puszczony przypisz false
                 keyDown[event.which] = false;
@@ -69,10 +67,12 @@ $(window).on('load', function(){
                 $paragraphKeyId.css("display", "none");
             }
         })
-    $textArea.on("focus", function () {
-        if(nameIsDone){
+
+    $name.on("blur", function () {
+        if(!nameIsDone){
             nameIsDone = !nameIsDone;
-            sendOnlyNameToDatabase();
+            console.log("focusout");
+            checkNameInDatabse();
         }
     })
     $textArea.keydown(function (event) {
@@ -95,7 +95,6 @@ $(window).on('load', function(){
         }
         timeToPreviousTemp = Date.now();
     })
-
     $textArea.keyup(function (event) {
         if (keyDownTextLength < maxLengthOfText) {
             //Jeśli przycisk został puszczony przypisz false
@@ -119,10 +118,10 @@ $(window).on('load', function(){
             contentType: "application/json; charset:utf-8",
             url:"http://localhost:8080/keys/add",
             data:JSON.stringify({
-                "name":personName,
                 "keyCode": idKey.which,
                 "timePressed": timePress[idKey.which],
-                "timeToNextChar": timeToPrevious[idKey.which]
+                "timeToNextChar": timeToPrevious[idKey.which],
+                "nameId": userID
             }),
             success:function (d) {
                 $paragraphKeyId.css("display","block");
@@ -149,15 +148,13 @@ $(window).on('load', function(){
             }
         })
         timePress[idKey]=0;
-        personName="";
         return false;
     }
     function sendOnlyNameToDatabase(){
         var i =0;
         for (i; i < charsToSend.length; i++) {
-            var old = JSON.stringify(charsToSend[i]).replace('##', personName)
+            var old = JSON.stringify(charsToSend[i]).replace('##', userID)
             charsToSend[i] = JSON.parse(old);
-            console.info(charsToSend[i]);
                 $.ajax({
                     type: "POST",
                     contentType: "application/json; charset:utf-8",
@@ -174,12 +171,58 @@ $(window).on('load', function(){
 
     function saveNameToSendLater(key){
         var lastIndex = charsToSend.length;
-        console.log(lastIndex);
         charsToSend[lastIndex] = JSON.stringify({
-            "name":"##",
+            "nameId":"##",
             "keyCode": key.which,
             "timePressed": timePress[key.which],
             "timeToNextChar": timeToPrevious[key.which]
+        })
+    }
+
+    function checkNameInDatabse(){
+        $.ajax({
+            type: "GET",
+            contentType: "application/json; charset:utf-8",
+            url: "http://localhost:8080/users/name/"+personName,
+            success: function(d) {
+                if (d.id!==null) {
+                    userID = d.id;
+                    $textArea.removeAttr('disabled');
+                    $textArea.focus();
+                    nameIsDone=true;
+                    sendOnlyNameToDatabase();
+                }
+                else {
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset:utf-8",
+                        url: "http://localhost:8080/users/add/name/"+personName,
+                        success: function(d) {
+                            if (d.id) {
+                                userID = d.id;
+                                sendOnlyNameToDatabase();
+                                $textArea.focus();
+                            }
+                        }
+                    })
+                }
+            },
+            error:function (){
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset:utf-8",
+                    url: "http://localhost:8080/users/add/name/"+personName,
+                    success: function(d) {
+                        if (d.id) {
+                            userID = d.id;
+                            $textArea.focus();
+                            sendOnlyNameToDatabase();
+                            $textArea.removeAttr('disabled');
+                            nameIsDone=true;
+                        }
+                    }
+                })
+            }
         })
     }
 })

@@ -14,9 +14,9 @@ public interface KeyRepository extends CrudRepository<KeyData, Long> {
 
     KeyData findKeyDataById(Long Id);
 
-    Iterable<KeyData> findKeyDataByName(String name);
+    Iterable<KeyData> findKeyDataByNameId(int name);
 
-    Page<KeyData> findKeyDataByName(String name,Pageable pageable);
+    Page<KeyData> findKeyDataByNameId(int name,Pageable pageable);
 
     @Query("SELECT * FROM keymap")
     Page<KeyData> queryAllBy(Pageable pageable);

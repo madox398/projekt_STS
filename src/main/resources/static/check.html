@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weryfikacja</title>
+  <script type="text/javascript" src="jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" src="scitptCheck.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="left">
+  <p>Stan połączenia</p>
+  <br>
+  <span class="dot" id="dotConnectionStatus"></span>
+  <br>
+  <br>
+  <p id="p_keyId">ID</p>
+  <span id="keyId"></span>
+</div>
+<div class="center">
+  <form>
+    <br>
+    <br>
+    <label for="text">Tekst do testu</label>
+    <br>
+    <textarea id="text" rows="35" cols="50" style="border-right: solid;"></textarea>
+
+    <br>
+    <br>
+    <button id="submit_button" type="button">Sprawdź</button>
+  </form>
+
+</div>
+<div class="right">
+  <div id="wynik">
+
+  </div>
+</div>
+</body>
+</html>

@@ -25,32 +25,25 @@ import java.util.Map;
 
 @RestController
 @ComponentScan("com.example.demo.repository")
-public class BackEndController {
+@RequestMapping(path="/keys")
+public class KeysController {
 
     @Autowired
     private KeyRepository repo;
 
     @CrossOrigin
-    @PostMapping("/keys/add")
+    @PostMapping("/add")
     private JSONObject newKey(@RequestBody KeyData newKey) {
-        if(newKey.getName().length()>0){
-
             repo.save(newKey);
 
             //Wyświetlanie id otrzymanego z bazy danych przesłanych danych w formacie JSON
             Map<String,Long> tempId = new HashMap<>();
             tempId.put("id",newKey.getId());
             return new JSONObject(tempId);
-        }
-        else {
-            Map<String,String> tempError = new HashMap<>();
-            tempError.put("error","name is null");
-            return new JSONObject(tempError);
-        }
     }
 
     //Wszystkie klucze z bazy
-    @GetMapping(value = "/keys",
+    @GetMapping(value = "/all",
             produces = MediaType.APPLICATION_JSON_VALUE)
     private Iterable<KeyData> getKeys(HttpServletResponse response) {
         response.addHeader("Content-Type","application/json");
@@ -58,7 +51,7 @@ public class BackEndController {
     }
 
     //Wszystkie klucze z bazy ale podzielone na strony
-    @GetMapping(value = "/keys/{page}/{limit}",
+    @GetMapping(value = "/all/{page}/{limit}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     private Page<KeyData> getPageOfKeys(HttpServletResponse response,
                                         @PathVariable @NotNull int page,
@@ -70,7 +63,7 @@ public class BackEndController {
 
 
     //Wpis z podanym id
-    @GetMapping(value = "/keys/id/{id}",
+    @GetMapping(value = "/id/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     private KeyData getKeybyId(HttpServletResponse response, @PathVariable @NotNull Long id) {
         response.addHeader("Content-Type","application/json");
@@ -79,26 +72,26 @@ public class BackEndController {
 
 
     //Wypisanie wszystkich wpisów o podanym imieniu
-    @GetMapping(value = "/keys/name/{name}",
+    @GetMapping(value = "/name/{name}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    private Iterable<KeyData> getKeybyName(HttpServletResponse response, @PathVariable @NotNull String name) {
+    private Iterable<KeyData> getKeybyName(HttpServletResponse response, @PathVariable @NotNull int name) {
         response.addHeader("Content-Type","application/json");
-        return repo.findKeyDataByName(name);
+        return repo.findKeyDataByNameId(name);
     }
 
     //Wypisanie wszystkich wpisów o podanej nazwie i podzielonych na strony
-    @GetMapping(value = "/keys/name/{name}/{page}/{limit}",
+    @GetMapping(value = "/name/{name}/{page}/{limit}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     private Page<KeyData> getPageOfKeysbyName(HttpServletResponse response,
-                                              @PathVariable @NotNull String name,
+                                              @PathVariable @NotNull int name,
                                               @PathVariable @NotNull int page,
                                               @PathVariable @NotNull int limit) {
         response.addHeader("Content-Type","application/json");
         Pageable pageable = PageRequest.of(page,limit);
-        return repo.findKeyDataByName(name,pageable);
+        return repo.findKeyDataByNameId(name,pageable);
     }
     //Export to CSV
-    @GetMapping("/keys/export")
+    @GetMapping("/export")
     public void exportToCSV(HttpServletResponse response) throws IOException {
 
         response.setContentType("text/csv");
@@ -112,8 +105,8 @@ public class BackEndController {
         Iterable<KeyData> listUsers = repo.findAll();
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
-        String[] csvHeader = {"name", "key_code", "time_pressed", "time_to_next_char"};
-        String[] nameMapping = {"name", "keyCode", "timePressed", "timeToNextChar"};
+        String[] csvHeader = {"name_Id", "key_code", "time_pressed", "time_to_next_char"};
+        String[] nameMapping = {"nameId", "keyCode", "timePressed", "timeToNextChar"};
 
         csvWriter.writeHeader(csvHeader);
 
