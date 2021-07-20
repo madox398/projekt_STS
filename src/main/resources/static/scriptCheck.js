@@ -7,6 +7,7 @@ $(window).on("load",function (){
     var keyDown=[];
     var keyDownTextLength=0;
     var endWriting=false;
+    var percent;
 
     var charsToSend=[];
     var jsonedChars=[];
@@ -63,6 +64,7 @@ $(window).on("load",function (){
     function sendTextToDatabase(){
         if(!endWriting) {
             var i = 0;
+            jsonedChars =[];
             jsonedChars += "[";
             for (i; i < charsToSend.length; i++) {
                 jsonedChars += "" + charsToSend[i] + ",";
@@ -73,19 +75,46 @@ $(window).on("load",function (){
             jsonedChars += "]";
             endWriting=true;
         }
-        console.log(jsonedChars);
-        console.log(JSON.parse(jsonedChars));
+        $(".lds-roller").css("display","block");
         $.ajax({
             type: "POST",
             contentType: "application/json; charset:utf-8",
             url: "http://localhost:5000/",
-            data: JSON.parse(jsonedChars),
-            success: function(){
-                setTimeout(function() {
-                }, 2);
+            data: jsonedChars,
+            success:function (d) {
+                if(d.name_id !== null) {
+                    getUserFromId(d.name_id);
+                    percent=d.percent;
+                }
+                $(".lds-roller").css("display","none");
+            },
+            error: function (d){
+                console.log(d.status);
+                console.log("error: " + d);
+                $(".lds-roller").css("display","none");
             }
         })
         return false;
+    }
+    function getUserFromId(id){
+        $(".lds-roller").css("display","block");
+        $.ajax({
+            type:"GET",
+            contentType: "application.json; charset:utf-8",
+            url: "http://localhost:8080/users/id/"+id,
+            success:function (d){
+                if(d.name){
+                    $("#wynik").text("Mam  pewność na "+ percent+"% że masz na imię "+d.name)
+                        .css("font-size","25px")
+                        .focus();
+                }
+                $(".lds-roller").css("display","none");
+            },
+            error: function (d){
+                console.log("error: " + d);
+                $(".lds-roller").css("display","none");
+            }
+        })
     }
 })
 

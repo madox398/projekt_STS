@@ -105,7 +105,7 @@ public class KeysController {
         Iterable<KeyData> listUsers = repo.findAll();
 
         ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
-        String[] csvHeader = {"name_Id", "key_code", "time_pressed", "time_to_next_char"};
+        String[] csvHeader = {"name", "key_code", "time_pressed", "time_to_next_char"};
         String[] nameMapping = {"nameId", "keyCode", "timePressed", "timeToNextChar"};
 
         csvWriter.writeHeader(csvHeader);
