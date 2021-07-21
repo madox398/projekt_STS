@@ -1,19 +1,20 @@
 $(window).on("load",function (){
-    var timeTemp=[];
-    var timePress=[];
-    var timeToPrevious=[];
-    var timeToPreviousTemp=0;
-    var firstKey=true;
-    var keyDown=[];
-    var keyDownTextLength=0;
-    var endWriting=false;
-    var percent;
+    let timeTemp = [];
+    let timePress=[];
+    let timeToPrevious=[];
+    let timeToPreviousTemp=0;
+    let firstKey=true;
+    let keyDown=[];
+    let keyDownTextLength=0;
+    let endWriting=false;
+    let percent;
 
-    var charsToSend=[];
-    var jsonedChars=[];
+    let charsToSend=[];
+    let jsonedChars=[];
 
     const $textarea=$('#text');
     const $submit_button=$('#submit_button');
+    const $roller=$(".lds-roller");
 
 
     $textarea.on("cut copy paste",function(e) {
@@ -53,7 +54,7 @@ $(window).on("load",function (){
     })
 
     function saveNameToSendLater(key){
-        var lastIndex = charsToSend.length;
+        let lastIndex = charsToSend.length;
         charsToSend[lastIndex] = JSON.stringify({
             "keyCode":key.which,
             "timePressed":timePress[key.which],
@@ -63,10 +64,10 @@ $(window).on("load",function (){
 
     function sendTextToDatabase(){
         if(!endWriting) {
-            var i = 0;
+
             jsonedChars =[];
             jsonedChars += "[";
-            for (i; i < charsToSend.length; i++) {
+            for (let i = 0; i < charsToSend.length; i++) {
                 jsonedChars += "" + charsToSend[i] + ",";
             }
             if (jsonedChars.lastIndexOf(",") === jsonedChars.length - 1) {
@@ -75,44 +76,41 @@ $(window).on("load",function (){
             jsonedChars += "]";
             endWriting=true;
         }
-        $(".lds-roller").css("display","block");
+        $roller.css("display","block");
         $.ajax({
             type: "POST",
             contentType: "application/json; charset:utf-8",
             url: "http://localhost:5000/",
             data: jsonedChars,
-            success:function (d) {
-                if(d.name_id !== null) {
-                    getUserFromId(d.name_id);
-                    percent=d.percent;
+            success:function (payload) {
+                if(payload["name_id"] !== null) {
+                    getUserFromId(payload["name_id"]);
+                    percent=payload["percent"];
                 }
-                $(".lds-roller").css("display","none");
+                $roller.css("display","none");
             },
-            error: function (d){
-                console.log(d.status);
-                console.log("error: " + d);
-                $(".lds-roller").css("display","none");
+            error: function (){
+                $roller.css("display","none");
             }
         })
         return false;
     }
     function getUserFromId(id){
-        $(".lds-roller").css("display","block");
+        $roller.css("display","block");
         $.ajax({
             type:"GET",
             contentType: "application.json; charset:utf-8",
             url: "http://localhost:8080/users/id/"+id,
-            success:function (d){
-                if(d.name){
-                    $("#wynik").text("Mam pewność na "+ percent+"% że masz na imię "+d.name)
+            success:function (payload){
+                if(payload["name"]){
+                    $("#wynik").text("Mam pewność na "+ percent+"% że masz na imię "+payload["name"])
                         .css("font-size","25px")
                         .focus();
                 }
-                $(".lds-roller").css("display","none");
+                $roller.css("display","none");
             },
-            error: function (d){
-                console.log("error: " + d);
-                $(".lds-roller").css("display","none");
+            error: function (){
+                $roller.css("display","none");
             }
         })
     }

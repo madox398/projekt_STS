@@ -31,7 +31,7 @@ public class KeysController {
     @Autowired
     private KeyRepository repo;
 
-    @CrossOrigin
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping("/add")
     private JSONObject newKey(@RequestBody KeyData newKey) {
             repo.save(newKey);

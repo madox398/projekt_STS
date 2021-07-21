@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.IOException;
 public class OtherController {
 
     @RequestMapping("/check.html")
+    @CrossOrigin(origins = "http://localhost:5000")
     private String runPython() throws IOException {
         Runtime.getRuntime()
                 .exec(

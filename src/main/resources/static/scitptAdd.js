@@ -1,16 +1,16 @@
 $(window).on('load', function(){
-    var timeTemp=[];
-    var timePress=[];
-    var timeToPrevious=[];
-    var timeToPreviousTemp=0;
-    var firstKey=true;
-    var personName;
-    var keyDown=[];
-    var keyDownTextLength=0;
-    var userID;
+    let timeTemp=[];
+    let timePress=[];
+    let timeToPrevious=[];
+    let timeToPreviousTemp=0;
+    let firstKey=true;
+    let personName;
+    let keyDown=[];
+    let keyDownTextLength=0;
+    let userID;
 
-    var charsToSend=[];
-    var nameIsDone=false;
+    let charsToSend=[];
+    let nameIsDone=false;
 
     const maxLengthOfText = 3000;
 
@@ -28,7 +28,7 @@ $(window).on('load', function(){
 
 
     $name.on("input", (function () {
-        var str = $name.val();
+        let str = $name.val();
         if (str.length <= 1) {
             $textArea.attr('disabled', 'disabled');
             nameIsDone=false;
@@ -123,18 +123,18 @@ $(window).on('load', function(){
                 "timeToNextChar": timeToPrevious[idKey.which],
                 "nameId": userID
             }),
-            success:function (d) {
+            success:function (payload) {
                 $paragraphKeyId.css("display","block");
                 $spanKeyId
                     .css("display","block")
                     .css("background-color","rgba(0,0,0,0)")
-                    .text(d.id);
+                    .text(payload["id"]);
                 $("#dotConnectionStatus").css("background-color","#00ff00");
                 $textArea.css("background-color","rgba(0,0,0,0)");
 
-                if(d.error){
+                if(payload["error"]){
                     $("#keyId")
-                        .text(d.error)
+                        .text(payload["error"])
                         .css("background-color","#ff0000");
                     $textArea.css("background-color","rgba(255,0,0,0.05)");
                     $("#p_keyId").css("display","none");
@@ -151,9 +151,9 @@ $(window).on('load', function(){
         return false;
     }
     function sendOnlyNameToDatabase(){
-        var i =0;
-        for (i; i < charsToSend.length; i++) {
-            var old = JSON.stringify(charsToSend[i]).replace('##', userID)
+
+        for (let i =0; i < charsToSend.length; i++) {
+            let old = JSON.stringify(charsToSend[i]).replace('##', userID)
             charsToSend[i] = JSON.parse(old);
                 $.ajax({
                     type: "POST",
@@ -170,7 +170,7 @@ $(window).on('load', function(){
     }
 
     function saveNameToSendLater(key){
-        var lastIndex = charsToSend.length;
+        let lastIndex = charsToSend.length;
         charsToSend[lastIndex] = JSON.stringify({
             "nameId":"##",
             "keyCode": key.which,
@@ -184,9 +184,9 @@ $(window).on('load', function(){
             type: "GET",
             contentType: "application/json; charset:utf-8",
             url: "http://localhost:8080/users/name/"+personName,
-            success: function(d) {
-                if (d.id!==null) {
-                    userID = d.id;
+            success: function(payload) {
+                if (payload["id"]!==null) {
+                    userID = payload["id"];
                     $textArea.removeAttr('disabled');
                     $textArea.focus();
                     nameIsDone=true;
@@ -197,9 +197,9 @@ $(window).on('load', function(){
                         type: "POST",
                         contentType: "application/json; charset:utf-8",
                         url: "http://localhost:8080/users/add/name/"+personName,
-                        success: function(d) {
-                            if (d.id) {
-                                userID = d.id;
+                        success: function(payload) {
+                            if (payload["id"]) {
+                                userID = payload["id"];
                                 sendOnlyNameToDatabase();
                                 $textArea.focus();
                             }
@@ -212,9 +212,9 @@ $(window).on('load', function(){
                     type: "POST",
                     contentType: "application/json; charset:utf-8",
                     url: "http://localhost:8080/users/add/name/"+personName,
-                    success: function(d) {
-                        if (d.id) {
-                            userID = d.id;
+                    success: function(payload) {
+                        if (payload["id"]) {
+                            userID = payload["id"];
                             $textArea.focus();
                             sendOnlyNameToDatabase();
                             $textArea.removeAttr('disabled');
