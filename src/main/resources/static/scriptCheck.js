@@ -104,7 +104,7 @@ $(window).on("load",function (){
             url: "http://localhost:8080/users/id/"+id,
             success:function (d){
                 if(d.name){
-                    $("#wynik").text("Mam  pewność na "+ percent+"% że masz na imię "+d.name)
+                    $("#wynik").text("Mam pewność na "+ percent+"% że masz na imię "+d.name)
                         .css("font-size","25px")
                         .focus();
                 }
