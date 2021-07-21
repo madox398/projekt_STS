@@ -32,7 +32,6 @@
     margin: auto;
     text-align:center;
 }
-
 #p_keyId{
     display: none;
 }
@@ -43,7 +42,6 @@ textarea{
 textarea:disabled{
     background-color: #e0e0e0;
 }
-
 
 /* loading */
 .lds-roller {
