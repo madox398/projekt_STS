@@ -39,7 +39,7 @@ $(window).on("load",function (){
             timeToPrevious[event.which] = Date.now() - timeToPreviousTemp;
         }
         timeToPreviousTemp = Date.now();
-    })
+    });
     $textarea.keyup(function (event) {
         //Jeśli przycisk został puszczony przypisz false
         keyDown[event.which] = false;
@@ -47,11 +47,11 @@ $(window).on("load",function (){
         timePress[event.which] = Date.now() - timeTemp[event.which];
         saveNameToSendLater(event);
         endWriting=false;
-    })
+    });
 
     $submit_button.on("click",function (){
         sendTextToDatabase();
-    })
+    });
 
     function saveNameToSendLater(key){
         let lastIndex = charsToSend.length;
@@ -92,7 +92,7 @@ $(window).on("load",function (){
             error: function (){
                 $roller.css("display","none");
             }
-        })
+        });
         return false;
     }
     function getUserFromId(id){

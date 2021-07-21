@@ -16,7 +16,7 @@ $(window).on('load', function(){
 
     const $textArea = $("#text");
     const $spanKeyId=$("#keyId");
-    const $paragraphKeyId=$("#p_keyId")
+    const $paragraphKeyId=$("#p_keyId");
     const $name = $("#name");
 
     $textArea
@@ -53,7 +53,7 @@ $(window).on('load', function(){
             timeToPrevious[event.which] = Date.now() - timeToPreviousTemp;
         }
         timeToPreviousTemp = Date.now();
-    })
+    });
     $name.keyup(function (event) {
             if (keyDownTextLength < maxLengthOfText) {
                 //Jeśli przycisk został puszczony przypisz false
@@ -66,7 +66,7 @@ $(window).on('load', function(){
                 $spanKeyId.text("Przekroczyłeś maksymalną liczbę znaków");
                 $paragraphKeyId.css("display", "none");
             }
-        })
+        });
 
     $name.on("blur", function () {
         if(!nameIsDone){
@@ -74,7 +74,7 @@ $(window).on('load', function(){
             console.log("focusout");
             checkNameInDatabse();
         }
-    })
+    });
     $textArea.keydown(function (event) {
         //określa liczbę znaków w polu tekstowym przed wpisaniem znaku
         keyDownTextLength=$textArea.val().length;
@@ -94,7 +94,7 @@ $(window).on('load', function(){
             timeToPrevious[event.which] = Date.now() - timeToPreviousTemp;
         }
         timeToPreviousTemp = Date.now();
-    })
+    });
     $textArea.keyup(function (event) {
         if (keyDownTextLength < maxLengthOfText) {
             //Jeśli przycisk został puszczony przypisz false
@@ -107,7 +107,7 @@ $(window).on('load', function(){
             $spanKeyId.text("Przekroczyłeś maksymalną liczbę znaków");
             $paragraphKeyId.css("display", "none");
         }
-    })
+    });
 
     function sendToDatabase(idKey)
     {
@@ -146,14 +146,15 @@ $(window).on('load', function(){
                 $paragraphKeyId.css("display","none");
                 $spanKeyId.css("display","none");
             }
-        })
+        });
         timePress[idKey]=0;
         return false;
     }
+
     function sendOnlyNameToDatabase(){
 
         for (let i =0; i < charsToSend.length; i++) {
-            let old = JSON.stringify(charsToSend[i]).replace('##', userID)
+            let old = JSON.stringify(charsToSend[i]).replace('##', userID);
             charsToSend[i] = JSON.parse(old);
                 $.ajax({
                     type: "POST",
@@ -225,4 +226,5 @@ $(window).on('load', function(){
             }
         })
     }
+
 })
