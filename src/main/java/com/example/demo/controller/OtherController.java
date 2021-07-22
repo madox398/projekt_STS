@@ -15,7 +15,7 @@ public class OtherController {
         Runtime.getRuntime()
                 .exec(
                         String.format("cmd.exe /c %s %s",
-                                "C:\\Users\\pzamor\\IdeaProjects\\demo\\venv\\Scripts\\python.exe",
+                                "C:\\Users\\pzamor\\IdeaProjects\\python_si\\venv\\Scripts\\python.exe",
                                 "C:\\Users\\pzamor\\IdeaProjects\\python_si\\forest.py"));
         return "check";
     }
