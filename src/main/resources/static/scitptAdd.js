@@ -116,7 +116,7 @@ $(window).on('load', function(){
         $.ajax({
             type: "POST",
             contentType: "application/json; charset:utf-8",
-            url:"http://localhost:8080/keys/add",
+            url:"http://172.29.74.134:8080/keys/add",
             data:JSON.stringify({
                 "keyCode": idKey.which,
                 "timePressed": timePress[idKey.which],
@@ -159,7 +159,7 @@ $(window).on('load', function(){
                 $.ajax({
                     type: "POST",
                     contentType: "application/json; charset:utf-8",
-                    url: "http://localhost:8080/keys/add",
+                    url: "http://172.29.74.134:8080/keys/add",
                     data: charsToSend[i],
                     success: function(){
                         setTimeout(function() {
@@ -184,7 +184,7 @@ $(window).on('load', function(){
         $.ajax({
             type: "GET",
             contentType: "application/json; charset:utf-8",
-            url: "http://localhost:8080/users/name/"+personName,
+            url: "http://172.29.74.134:8080/users/name/"+personName,
             success: function(payload) {
                 if (payload["id"]!==null) {
                     userID = payload["id"];
@@ -197,7 +197,7 @@ $(window).on('load', function(){
                     $.ajax({
                         type: "POST",
                         contentType: "application/json; charset:utf-8",
-                        url: "http://localhost:8080/users/add/name/"+personName,
+                        url: "http://172.29.74.134:8080/users/add/name/"+personName,
                         success: function(payload) {
                             if (payload["id"]) {
                                 userID = payload["id"];
@@ -212,7 +212,7 @@ $(window).on('load', function(){
                 $.ajax({
                     type: "POST",
                     contentType: "application/json; charset:utf-8",
-                    url: "http://localhost:8080/users/add/name/"+personName,
+                    url: "http://172.29.74.134:8080/users/add/name/"+personName,
                     success: function(payload) {
                         if (payload["id"]) {
                             userID = payload["id"];

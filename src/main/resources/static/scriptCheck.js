@@ -78,9 +78,14 @@ $(window).on("load",function (){
         }
         $roller.css("display","block");
         $.ajax({
+            crossDomain: true,
+            headers: {
+                "accept": "application/json",
+                "Access-Control-Allow-Origin":"*"
+            },
             type: "POST",
             contentType: "application/json; charset:utf-8",
-            url: "http://localhost:5000/",
+            url: "http://172.29.74.134:5000/",
             data: jsonedChars,
             success:function (payload) {
                 if(payload["name_id"] !== null) {
@@ -100,7 +105,7 @@ $(window).on("load",function (){
         $.ajax({
             type:"GET",
             contentType: "application.json; charset:utf-8",
-            url: "http://localhost:8080/users/id/"+id,
+            url: "http://172.29.74.134:8080/users/id/"+id,
             success:function (payload){
                 if(payload["name"]){
                     $("#wynik").text("Mam pewność na "+ percent+"% że masz na imię "+payload["name"])
